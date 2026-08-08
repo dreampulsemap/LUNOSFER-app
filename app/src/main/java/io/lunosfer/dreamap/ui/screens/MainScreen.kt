@@ -35,7 +35,6 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
     val sessionStatus by supabaseClient.auth.sessionStatus.collectAsState(initial = SessionStatus.Initializing)
     val isLoggedIn = sessionStatus is SessionStatus.Authenticated
 
-    
     if (sessionStatus is SessionStatus.Initializing) {
         Box(modifier = Modifier.fillMaxSize().background(Void950), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(color = AstralGold)
@@ -45,18 +44,22 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    
+
     val showTopBottomBars = currentRoute != Screen.Auth.route
 
     Scaffold(
-        topBar = { 
+        topBar = {
             if (showTopBottomBars) {
-                TopBar(isLoggedIn = isLoggedIn, onLoginClick = { navController.navigate(Screen.Auth.route) }, onProfileClick = { navController.navigate(Screen.Profile.route) }) 
+                TopBar(
+                    isLoggedIn = isLoggedIn,
+                    onLoginClick = { navController.navigate(Screen.Auth.route) },
+                    onProfileClick = { navController.navigate(Screen.Profile.route) }
+                )
             }
         },
-        bottomBar = { 
+        bottomBar = {
             if (showTopBottomBars && isLoggedIn) {
-                BottomNavBar(navController) 
+                BottomNavBar(navController)
             }
         },
         containerColor = Void950
@@ -202,41 +205,75 @@ fun BottomNavBar(navController: NavController) {
     val navItemColors = NavigationBarItemDefaults.colors(
         selectedIconColor = AstralGold,
         selectedTextColor = AstralGold,
-        unselectedIconColor = Color(0xFF64748B), // slate-500
+        unselectedIconColor = Color(0xFF64748B),
         unselectedTextColor = Color(0xFF64748B),
         indicatorColor = Color.Transparent
     )
 
-    NavigationBar(
-        containerColor = Void900,
-        contentColor = Color.White,
-        tonalElevation = 0.dp
-    ) {
-        NavigationBarItem(
-            selected = currentRoute == Screen.Home.route,
-            onClick = { navController.navigate(Screen.Home.route) },
-            icon = { Icon(Icons.Filled.Home, contentDescription = null) },
-            label = { Text(stringResource(R.string.nav_home), style = MaterialTheme.typography.labelSmall) },
-            colors = navItemColors
-        )
-        NavigationBarItem(
-            selected = currentRoute == Screen.Explore.route,
-            onClick = { navController.navigate(Screen.Explore.route) },
-            icon = { Icon(Icons.Filled.Explore, contentDescription = null) },
-            label = { Text(stringResource(R.string.nav_explore), style = MaterialTheme.typography.labelSmall) },
-            colors = navItemColors
-        )
-        
-        // FAB in the middle
+    // FAB'ı NavigationBar dışında, üzerine overlay olarak çiz
+    Box {
+        NavigationBar(
+            containerColor = Void900,
+            contentColor = Color.White,
+            tonalElevation = 0.dp
+        ) {
+            NavigationBarItem(
+                selected = currentRoute == Screen.Home.route,
+                onClick = { navController.navigate(Screen.Home.route) },
+                icon = { Icon(Icons.Filled.Home, contentDescription = null) },
+                label = { Text(stringResource(R.string.nav_home), style = MaterialTheme.typography.labelSmall) },
+                colors = navItemColors
+            )
+            NavigationBarItem(
+                selected = currentRoute == Screen.Explore.route,
+                onClick = { navController.navigate(Screen.Explore.route) },
+                icon = { Icon(Icons.Filled.Explore, contentDescription = null) },
+                label = { Text(stringResource(R.string.nav_explore), style = MaterialTheme.typography.labelSmall) },
+                colors = navItemColors
+            )
+            // FAB için boş placeholder — ortadaki slot'u ayırt etmek için
+            NavigationBarItem(
+                selected = false,
+                onClick = {},
+                icon = { Spacer(Modifier.size(56.dp)) },
+                label = {},
+                colors = navItemColors,
+                enabled = false
+            )
+            NavigationBarItem(
+                selected = currentRoute == Screen.Vision.route,
+                onClick = { navController.navigate(Screen.Vision.route) },
+                icon = { Icon(Icons.Filled.TrackChanges, contentDescription = null) },
+                label = { Text(stringResource(R.string.nav_vision), style = MaterialTheme.typography.labelSmall) },
+                colors = navItemColors
+            )
+            NavigationBarItem(
+                selected = currentRoute == Screen.Messages.route,
+                onClick = { navController.navigate(Screen.Messages.route) },
+                icon = {
+                    BadgedBox(badge = {
+                        if (unreadCount > 0) {
+                            Badge(containerColor = ShadowWorkRose) {
+                                Text(unreadCount.toString())
+                            }
+                        }
+                    }) {
+                        Icon(Icons.Filled.Message, contentDescription = null)
+                    }
+                },
+                label = { Text(stringResource(R.string.nav_messages), style = MaterialTheme.typography.labelSmall) },
+                colors = navItemColors
+            )
+        }
+
+        // FAB — NavigationBar'ın üstünde, ortada yüzen buton
         Box(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            contentAlignment = Alignment.TopCenter
+                .align(Alignment.TopCenter)
+                .offset(y = (-28).dp)
         ) {
             Box(
                 modifier = Modifier
-                    .offset(y = (-16).dp)
                     .size(56.dp)
                     .clip(CircleShape)
                     .background(Brush.linearGradient(listOf(AstralGold, AetherCyan)))
@@ -245,7 +282,7 @@ fun BottomNavBar(navController: NavController) {
             ) {
                 Icon(Icons.Filled.Add, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
             }
-            
+
             DropdownMenu(expanded = showCreateMenu, onDismissRequest = { showCreateMenu = false }) {
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.nav_new_dream)) },
@@ -259,31 +296,6 @@ fun BottomNavBar(navController: NavController) {
                 )
             }
         }
-
-        NavigationBarItem(
-            selected = currentRoute == Screen.Vision.route,
-            onClick = { navController.navigate(Screen.Vision.route) },
-            icon = { Icon(Icons.Filled.TrackChanges, contentDescription = null) },
-            label = { Text(stringResource(R.string.nav_vision), style = MaterialTheme.typography.labelSmall) },
-            colors = navItemColors
-        )
-        NavigationBarItem(
-            selected = currentRoute == Screen.Messages.route,
-            onClick = { navController.navigate(Screen.Messages.route) },
-            icon = {
-                BadgedBox(badge = {
-                    if (unreadCount > 0) {
-                        Badge(containerColor = ShadowWorkRose) {
-                            Text(unreadCount.toString())
-                        }
-                    }
-                }) {
-                    Icon(Icons.Filled.Message, contentDescription = null)
-                }
-            },
-            label = { Text(stringResource(R.string.nav_messages), style = MaterialTheme.typography.labelSmall) },
-            colors = navItemColors
-        )
     }
 }
 
