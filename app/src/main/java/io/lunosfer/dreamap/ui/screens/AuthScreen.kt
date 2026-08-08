@@ -1,4 +1,4 @@
-package com.example.ui.screens
+package io.lunosfer.dreamap.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -16,9 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.R
-import com.example.supabase.supabaseClient
-import com.example.ui.theme.*
+import io.lunosfer.dreamap.R
+import io.lunosfer.dreamap.supabase.supabaseClient
+import io.lunosfer.dreamap.ui.theme.*
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.Github

@@ -1,4 +1,4 @@
-package com.example.ui.screens
+package io.lunosfer.dreamap.ui.screens
 
 sealed class Screen(val route: String) {
     object Auth : Screen("auth")

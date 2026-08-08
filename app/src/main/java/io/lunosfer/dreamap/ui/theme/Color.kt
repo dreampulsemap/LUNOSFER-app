@@ -1,4 +1,4 @@
-package com.example.ui.theme
+package io.lunosfer.dreamap.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

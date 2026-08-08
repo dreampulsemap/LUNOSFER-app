@@ -1,4 +1,4 @@
-package com.example
+package io.lunosfer.dreamap
 
 import org.junit.Assert.*
 import org.junit.Test

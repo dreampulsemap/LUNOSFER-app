@@ -1,6 +1,6 @@
-package com.example.supabase
+package io.lunosfer.dreamap.supabase
 
-import com.example.BuildConfig
+import io.lunosfer.dreamap.BuildConfig
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.postgrest.Postgrest

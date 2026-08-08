@@ -1,4 +1,4 @@
-package com.example.ui.theme
+package io.lunosfer.dreamap.ui.theme
 
 import android.app.Activity
 import androidx.compose.material3.MaterialTheme

@@ -1,4 +1,4 @@
-package com.example.ui.screens
+package io.lunosfer.dreamap.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -24,9 +24,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.R
-import com.example.supabase.supabaseClient
-import com.example.ui.theme.*
+import io.lunosfer.dreamap.R
+import io.lunosfer.dreamap.supabase.supabaseClient
+import io.lunosfer.dreamap.ui.theme.*
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.status.SessionStatus
 
@@ -171,6 +171,16 @@ fun TopBar(isLoggedIn: Boolean, onLoginClick: () -> Unit, onProfileClick: (() ->
                 ) {
                     Icon(Icons.Filled.Person, contentDescription = null, tint = AstralGold, modifier = Modifier.size(20.dp))
                 }
+                var showMoreMenu by remember { mutableStateOf(false) }
+                Box {
+                    IconButton(onClick = { showMoreMenu = true }) {
+                        Icon(Icons.Filled.MoreVert, contentDescription = "More", tint = Color.White)
+                    }
+                    DropdownMenu(expanded = showMoreMenu, onDismissRequest = { showMoreMenu = false }) {
+                        DropdownMenuItem(text = { Text("Settings") }, onClick = { showMoreMenu = false })
+                        DropdownMenuItem(text = { Text("Help & Feedback") }, onClick = { showMoreMenu = false })
+                    }
+                }
             } else {
                 TextButton(onClick = onLoginClick, modifier = Modifier.padding(end = 8.dp)) {
                     Icon(Icons.Filled.Login, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
@@ -187,6 +197,7 @@ fun BottomNavBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     var showCreateMenu by remember { mutableStateOf(false) }
+    var unreadCount by remember { mutableIntStateOf(0) }
 
     val navItemColors = NavigationBarItemDefaults.colors(
         selectedIconColor = AstralGold,
@@ -261,7 +272,11 @@ fun BottomNavBar(navController: NavController) {
             onClick = { navController.navigate(Screen.Messages.route) },
             icon = {
                 BadgedBox(badge = {
-                    Badge(containerColor = ShadowWorkRose)
+                    if (unreadCount > 0) {
+                        Badge(containerColor = ShadowWorkRose) {
+                            Text(unreadCount.toString())
+                        }
+                    }
                 }) {
                     Icon(Icons.Filled.Message, contentDescription = null)
                 }

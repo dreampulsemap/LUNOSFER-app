@@ -1,4 +1,4 @@
-package com.example.ui.screens
+package io.lunosfer.dreamap.ui.screens
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.supabase.supabaseClient
-import com.example.ui.theme.*
+import io.lunosfer.dreamap.supabase.supabaseClient
+import io.lunosfer.dreamap.ui.theme.*
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
