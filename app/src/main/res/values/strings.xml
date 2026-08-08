@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Lunosfer</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_explore">Explore</string>
+    <string name="nav_vision">Vision</string>
+    <string name="nav_messages">Messages</string>
+    <string name="nav_create">Create</string>
+    <string name="nav_new_dream">Log a Dream</string>
+    <string name="nav_new_vision">New Vision</string>
+    <string name="nav_login">Log In</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="auth_title">Welcome Back</string>
+    <string name="auth_register_title">Create Your Account</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_username">Username</string>
+    <string name="auth_username_required">Username is required.</string>
+    <string name="auth_login">Log In</string>
+    <string name="auth_register">Register</string>
+    <string name="auth_loading">Loading...</string>
+    <string name="auth_success">Registration successful! Please check your email.</string>
+    <string name="auth_no_account">Don\'t have an account? Register</string>
+    <string name="auth_has_account">Already have an account? Log in</string>
+    <string name="action_login_google">Continue with Google</string>
+    <string name="action_login_github">Continue with GitHub</string>
+</resources>

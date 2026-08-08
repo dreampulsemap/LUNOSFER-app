@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Lunosfer</string>
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_explore">استكشاف</string>
+    <string name="nav_vision">الرؤية</string>
+    <string name="nav_messages">الرسائل</string>
+    <string name="nav_create">إنشاء</string>
+    <string name="nav_new_dream">سجّل حلماً</string>
+    <string name="nav_new_vision">رؤية جديدة</string>
+    <string name="nav_login">تسجيل الدخول</string>
+    <string name="nav_notifications">الإشعارات</string>
+</resources>

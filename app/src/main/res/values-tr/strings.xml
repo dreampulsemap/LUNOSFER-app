@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Lunosfer</string>
+    <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_explore">Keşfet</string>
+    <string name="nav_vision">Vizyon</string>
+    <string name="nav_messages">Mesaj</string>
+    <string name="nav_create">Oluştur</string>
+    <string name="nav_new_dream">Yeni Rüya Anlat</string>
+    <string name="nav_new_vision">Yeni Vizyon Ekle</string>
+    <string name="nav_login">Giriş Yap</string>
+    <string name="nav_notifications">Bildirimler</string>
+    <string name="auth_title">Yeniden Hoş Geldin</string>
+    <string name="auth_register_title">Hesap Oluştur</string>
+    <string name="auth_email">E-posta</string>
+    <string name="auth_password">Şifre</string>
+    <string name="auth_username">Kullanıcı Adı</string>
+    <string name="auth_username_required">Kullanıcı adı zorunludur.</string>
+    <string name="auth_login">Giriş Yap</string>
+    <string name="auth_register">Kayıt Ol</string>
+    <string name="auth_loading">Yükleniyor...</string>
+    <string name="auth_success">Kayıt başarılı! Lütfen e-postanı kontrol et.</string>
+    <string name="auth_no_account">Hesabın yok mu? Kayıt ol</string>
+    <string name="auth_has_account">Zaten hesabın var mı? Giriş yap</string>
+    <string name="action_login_google">Google ile devam et</string>
+    <string name="action_login_github">GitHub ile devam et</string>
+</resources>

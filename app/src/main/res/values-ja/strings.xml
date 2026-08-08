@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Lunosfer</string>
+    <string name="nav_home">ホーム</string>
+    <string name="nav_explore">探索</string>
+    <string name="nav_vision">ビジョン</string>
+    <string name="nav_messages">メッセージ</string>
+    <string name="nav_create">作成</string>
+    <string name="nav_new_dream">夢を記録する</string>
+    <string name="nav_new_vision">新しいビジョン</string>
+    <string name="nav_login">ログイン</string>
+    <string name="nav_notifications">通知</string>
+    <string name="auth_title">おかえりなさい</string>
+    <string name="auth_register_title">アカウントを作成</string>
+    <string name="auth_email">メールアドレス</string>
+    <string name="auth_password">パスワード</string>
+    <string name="auth_username">ユーザー名</string>
+    <string name="auth_username_required">ユーザー名は必須です。</string>
+    <string name="auth_login">ログイン</string>
+    <string name="auth_register">登録する</string>
+    <string name="auth_loading">読み込み中...</string>
+    <string name="auth_success">登録に成功しました。メールを確認してください。</string>
+    <string name="auth_no_account">アカウントをお持ちでないですか？ 登録する</string>
+    <string name="auth_has_account">すでにアカウントがありますか？ ログイン</string>
+</resources>

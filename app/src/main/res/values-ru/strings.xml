@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Lunosfer</string>
+    <string name="nav_home">Главная</string>
+    <string name="nav_explore">Обзор</string>
+    <string name="nav_vision">Видение</string>
+    <string name="nav_messages">Сообщения</string>
+    <string name="nav_create">Создать</string>
+    <string name="nav_new_dream">Записать сон</string>
+    <string name="nav_new_vision">Новое видение</string>
+    <string name="nav_login">Войти</string>
+    <string name="nav_notifications">Уведомления</string>
+    <string name="auth_title">С возвращением</string>
+    <string name="auth_register_title">Создать аккаунт</string>
+    <string name="auth_email">Эл. почта</string>
+    <string name="auth_password">Пароль</string>
+    <string name="auth_username">Имя пользователя</string>
+    <string name="auth_username_required">Имя пользователя обязательно.</string>
+    <string name="auth_login">Войти</string>
+    <string name="auth_register">Зарегистрироваться</string>
+    <string name="auth_loading">Загрузка...</string>
+    <string name="auth_success">Регистрация успешна! Проверьте вашу почту.</string>
+    <string name="auth_no_account">Нет аккаунта? Зарегистрируйтесь</string>
+    <string name="auth_has_account">Уже есть аккаунт? Войти</string>
+</resources>

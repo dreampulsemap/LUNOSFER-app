@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Lunosfer</string>
+    <string name="nav_home">होम</string>
+    <string name="nav_explore">एक्सप्लोर</string>
+    <string name="nav_vision">विज़न</string>
+    <string name="nav_messages">संदेश</string>
+    <string name="nav_create">बनाएं</string>
+    <string name="nav_new_dream">सपना दर्ज करें</string>
+    <string name="nav_new_vision">नया विज़न जोड़ें</string>
+    <string name="nav_login">लॉग इन करें</string>
+    <string name="nav_notifications">सूचनाएं</string>
+</resources>
