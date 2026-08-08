@@ -2,177 +2,302 @@ package io.lunosfer.dreamap.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.ElectricBolt
+import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import io.lunosfer.dreamap.data.model.Dream
+import io.lunosfer.dreamap.data.model.FeedItem
+import io.lunosfer.dreamap.data.model.Goal
 import io.lunosfer.dreamap.ui.theme.*
+import io.lunosfer.dreamap.ui.viewmodel.HomeViewModel
+import io.lunosfer.dreamap.ui.viewmodel.UiState
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
+    val state by viewModel.state.collectAsState()
+
+    Box(modifier = Modifier.fillMaxSize().background(Void950)) {
+        when (val current = state) {
+            is UiState.Loading -> HomeLoading()
+            is UiState.Error -> HomeError(message = current.message, onRetry = viewModel::retry)
+            is UiState.Success -> HomeFeedList(items = current.data)
+        }
+    }
+}
+
+@Composable
+private fun HomeLoading() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(color = AstralGold)
+    }
+}
+
+@Composable
+private fun HomeError(message: String, onRetry: () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Void950)
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        modifier = Modifier.fillMaxSize().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = "Akış yüklenemedi",
+            color = Color.White,
+            style = MaterialTheme.typography.titleMedium.copy(fontFamily = SerifFontFamily)
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = message,
+            color = Color(0xFF94A3B8),
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(16.dp))
+        OutlinedButton(
+            onClick = onRetry,
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = AstralGold),
+            border = BorderStroke(1.dp, AstralGold.copy(alpha = 0.4f))
+        ) {
+            Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Tekrar Dene")
+        }
+    }
+}
+
+@Composable
+private fun HomeFeedList(items: List<FeedItem>) {
+    if (items.isEmpty()) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
-                text = "HOŞ GELDİN",
-                color = AstralGold.copy(alpha = 0.8f),
-                style = MaterialTheme.typography.labelLarge.copy(
-                    letterSpacing = 2.sp,
-                    fontFamily = SansFontFamily
-                )
-            )
-            Text(
-                text = "Astral Gezgin",
+                text = "Henüz akışında bir şey yok",
                 color = Color.White,
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontFamily = SerifFontFamily,
-                    fontWeight = FontWeight.Light
-                )
+                style = MaterialTheme.typography.titleMedium.copy(fontFamily = SerifFontFamily)
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "Bir rüya kaydet ya da bir vizyon oluştur, burada görünsün.",
+                color = Color(0xFF94A3B8),
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
             )
         }
+        return
+    }
 
-        // Active Vision Card
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Void800.copy(alpha = 0.6f)),
-            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = "HOŞ GELDİN",
+                    color = AstralGold.copy(alpha = 0.8f),
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        letterSpacing = 2.sp,
+                        fontFamily = SansFontFamily
+                    )
+                )
+                Text(
+                    text = "Astral Gezgin",
+                    color = Color.White,
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontFamily = SerifFontFamily,
+                        fontWeight = FontWeight.Light
+                    )
+                )
+            }
+        }
+
+        items(items, key = { it.createdAt + it.hashCode() }) { feedItem ->
+            when (feedItem) {
+                is FeedItem.DreamItem -> DreamFeedCard(feedItem.dream)
+                is FeedItem.VisionItem -> VisionFeedCard(feedItem.goal)
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeedCardOwnerHeader(ownerName: String, avatarUrl: String?) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
+                .background(Void800),
+            contentAlignment = Alignment.Center
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                // Background glow simulation
+            if (avatarUrl != null) {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize().clip(CircleShape)
+                )
+            } else {
+                Text(ownerName.take(1).uppercase(), color = AstralGold, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+        Text(ownerName, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+/**
+ * dreams tablosundan bir kart. content'ten üretilmiş görsel (ai_image_url)
+ * varsa gösterilir; image_status "broken" ise home-feed.js zaten filtreliyor
+ * (bkz. pages/api/home-feed.js fetchDreams neq('image_status', 'broken')),
+ * ama null olabileceğinden burada da güvenli fallback var.
+ */
+@Composable
+private fun DreamFeedCard(dream: Dream) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Void800.copy(alpha = 0.6f)),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
+    ) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            FeedCardOwnerHeader(
+                ownerName = dream.owner?.nameOrFallback ?: "Bilinmeyen",
+                avatarUrl = dream.owner?.avatarUrl
+            )
+
+            if (dream.aiImageUrl != null) {
+                AsyncImage(
+                    model = dream.aiImageUrl,
+                    contentDescription = dream.displayTitle,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+            }
+
+            Text(
+                text = dream.displayTitle,
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium.copy(fontFamily = SerifFontFamily),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text("❤ ${dream.likesCount ?: 0}", color = Color(0xFF94A3B8), fontSize = 12.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.Message, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(12.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("${dream.commentsCount ?: 0}", color = Color(0xFF94A3B8), fontSize = 12.sp)
+                }
+            }
+        }
+    }
+}
+
+/** goals tablosundan bir kart — GoalCard.jsx'in ön yüzüyle aynı alanlar (title, cover, completion). */
+@Composable
+private fun VisionFeedCard(goal: Goal) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Void800.copy(alpha = 0.6f)),
+        border = BorderStroke(1.dp, AstralGold.copy(alpha = 0.15f))
+    ) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            FeedCardOwnerHeader(
+                ownerName = goal.owner?.nameOrFallback ?: "Bilinmeyen",
+                avatarUrl = goal.owner?.avatarUrl
+            )
+
+            Box {
+                if (goal.coverImageUrl != null) {
+                    AsyncImage(
+                        model = goal.coverImageUrl,
+                        contentDescription = goal.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Void900),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Filled.TrackChanges, contentDescription = null, tint = AstralGold.copy(alpha = 0.5f), modifier = Modifier.size(32.dp))
+                    }
+                }
                 Box(
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .offset(x = 16.dp, y = (-16).dp)
-                        .size(128.dp)
-                        .background(AetherViolet.copy(alpha = 0.1f), CircleShape)
-                )
-
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                        .align(Alignment.TopStart)
+                        .padding(10.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(Void950.copy(alpha = 0.7f))
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(
-                            text = "Aktif Vizyonun Yok",
-                            color = AstralGold,
-                            style = MaterialTheme.typography.titleLarge.copy(fontFamily = SerifFontFamily)
-                        )
-                        Text(
-                            text = "Henüz bir vizyon belirlemedin. Geleceğini şekillendirmek için yeni bir vizyon eklemeye ne dersin?",
-                            color = Color(0xFF94A3B8), // slate-400
-                            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp)
-                        )
-                    }
-
-                    OutlinedButton(
-                        onClick = { /* TODO */ },
-                        modifier = Modifier.fillMaxWidth().height(48.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = AstralGold),
-                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
-                    ) {
-                        Text("Vizyon Belirle", fontWeight = FontWeight.SemiBold)
-                    }
-                }
-            }
-        }
-
-        // Stats Grid
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Dream Record
-            Card(
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Void800.copy(alpha = 0.6f)),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(AetherIndigo.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(Icons.Filled.Book, contentDescription = null, tint = AetherIndigo, modifier = Modifier.size(20.dp))
-                    }
-                    Text("Rüya Kaydı", color = Color(0xFF94A3B8), fontSize = 12.sp)
-                    Text("12", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("VİZYON", color = AstralGold, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                 }
             }
 
-            // Aura Power
-            Card(
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Void800.copy(alpha = 0.6f)),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(AstralAmber.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(Icons.Filled.ElectricBolt, contentDescription = null, tint = AstralAmber, modifier = Modifier.size(20.dp))
-                    }
-                    Text("Aura Gücü", color = Color(0xFF94A3B8), fontSize = 12.sp)
-                    Text("Low", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                }
-            }
-        }
-
-        // Explore Header
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
             Text(
-                text = "Keşfet",
+                text = goal.title,
                 color = Color.White,
-                style = MaterialTheme.typography.titleLarge.copy(fontFamily = SerifFontFamily)
+                style = MaterialTheme.typography.titleMedium.copy(fontFamily = SerifFontFamily),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = "TÜMÜNÜ GÖR",
-                color = AstralGold,
-                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
-            )
+
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(Color.White.copy(alpha = 0.08f))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(((goal.completionPercentage ?: 0) / 100f).coerceIn(0f, 1f))
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(50))
+                            .background(AstralGold)
+                    )
+                }
+                Text("%${goal.completionPercentage ?: 0} tamamlandı", color = Color(0xFF94A3B8), fontSize = 11.sp)
+            }
         }
     }
 }

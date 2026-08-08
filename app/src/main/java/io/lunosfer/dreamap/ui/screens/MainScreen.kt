@@ -77,9 +77,9 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 })
             }
             composable(Screen.Home.route) { HomeScreen() }
-            composable(Screen.Explore.route) { PlaceholderScreen(stringResource(R.string.nav_explore)) }
-            composable(Screen.Vision.route) { PlaceholderScreen(stringResource(R.string.nav_vision)) }
-            composable(Screen.Messages.route) { PlaceholderScreen(stringResource(R.string.nav_messages)) }
+            composable(Screen.Explore.route) { ExploreScreen() }
+            composable(Screen.Vision.route) { VisionScreen() }
+            composable(Screen.Messages.route) { MessagesScreen() }
             composable(Screen.CreateDream.route) { PlaceholderScreen(stringResource(R.string.nav_new_dream)) }
             composable(Screen.CreateVision.route) { PlaceholderScreen(stringResource(R.string.nav_new_vision)) }
             composable(Screen.Profile.route) {
